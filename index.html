@@ -9,12 +9,74 @@
 </head>
 
   <body>
-    
+    <div id="header">
+      <div>
+        <button>≡</button>
+      </div>
+      <h3 id="title">Meldogu</h3>
+      <div id="rightBtns">
+        <button id="addElem">+</button>
+        <button>te</button>
+        <button id="settings">⚙︎️</button>
+      </div>
+    </div>
+    <div id="body">
+      <p id="currentTime"></p>
+    </div>
   </body>
   <style>
-    
+    body{
+      padding: 0;
+      margin: 0;
+      font-family: "Courier New", monospace;
+    }
+  </style>
+  <style>
+    #header {
+      height: 60px;
+      width: 100vw;
+      background-color: #5C6AC4;
+      
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    #header>*{
+    }
+    #rightBtns{
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    #rightBtns>button{
+      background-color: rgba(92, 106, 196, 0);
+      border: none;
+      font-size: 14px;
+      color: white;
+    }
+    #rightBtns>button:hover{
+      color: gray;
+    }
+    #addElem{
+      font-size: 25px !important;
+    }
+    #settings{
+      font-size: 30px !important;
+      padding-bottom: 4.8px;
+    }
+    #title {
+    	color: white;
+    }
   </style>
   <script>
-    
+    function showTime() {
+    	document.getElementById('currentTime').innerHTML = new Date().toUTCString();
+    }
+    showTime();
+    setInterval(function () {
+    	showTime();
+    }, 1000);
   </script>
 </html>
