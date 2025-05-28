@@ -10,18 +10,28 @@
 
   <body>
     <div id="header">
-      <div>
-        <button>≡</button>
-      </div>
+      <button>≡</button>
+      <button class="bumpBottom">↺</button>
+      <button class="bumpBottom">↻</button>
       <h3 id="title">Meldogu</h3>
-      <div id="rightBtns">
-        <button id="addElem">+</button>
-        <button>te</button>
-        <button id="settings">⚙︎️</button>
-      </div>
+      <button id="addElem">+</button>
+      <button>te</button>
+      <button id="settings" class="bumpBottom">⚙︎️</button>
     </div>
-    <div id="body">
-      <p id="currentTime"></p>
+    <div id="container">
+      <div id="map" class="zoomable">
+        map lorem ipsum dolor background-color display discordapp
+        <p id="currentTime"></p>
+        <button id="addMapL" class="mapEditorBtn">L+</button>
+        <button id="addMapU" class="mapEditorBtn">U+</button>
+        <button id="addMapD" class="mapEditorBtn">D+</button>
+        <button id="addMapR" class="mapEditorBtn">R+</button>
+      </div>
+      <div id="zoomBtns">
+        <button id="zoomReset">R</button>
+        <button id="zoomOut">-</button>
+        <button id="zoomIn">+</button>
+      </div>
     </div>
   </body>
   <style>
@@ -30,8 +40,17 @@
       margin: 0;
       font-family: "Courier New", monospace;
     }
+    body{
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+    div, body, p{
+      margin:0;
+      padding:0;
+    }
   </style>
-  <style>
+  <style id="headerStyle">
     #header {
       height: 60px;
       width: 100vw;
@@ -42,41 +61,230 @@
       justify-content: space-evenly;
       align-items: center;
     }
-    #header>*{
-    }
-    #rightBtns{
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-evenly;
-      align-items: center;
-    }
-    #rightBtns>button{
+    #header>button{
       background-color: rgba(92, 106, 196, 0);
       border: none;
-      font-size: 14px;
+      font-size: 24px;
       color: white;
     }
-    #rightBtns>button:hover{
+    #header>button:hover{
       color: gray;
     }
     #addElem{
       font-size: 25px !important;
     }
-    #settings{
-      font-size: 30px !important;
+    .bumpBottom{
       padding-bottom: 4.8px;
+    }
+    #settings{
+      font-size: 30px !important
     }
     #title {
     	color: white;
     }
   </style>
-  <script>
-    function showTime() {
-    	document.getElementById('currentTime').innerHTML = new Date().toUTCString();
+  <style id="zoomableStyle">
+    #container{
+      width: 100vw;
+      height: 100vh;
+      background-color: lightgray;
+      overflow-x: scroll;
+      overflow-y: scroll;
+      position: relative;
+      
+      display: flex;
+      justify-content: left;
     }
-    showTime();
-    setInterval(function () {
-    	showTime();
-    }, 1000);
+    #zoomBtns{
+      position: fixed;
+      right: 0.8vw;
+      bottom: 0.8vh;
+    }
+    #zoomBtns button{
+      width: 26px;
+      height: 26px;
+    }
+    .zoomable{
+      position: relative;
+      transform-origin: 0 0;
+    }
+    #map{
+      background-color: white;
+      
+      background-image: url('https://media.discordapp.net/attachments/1293426709596733560/1368597915559530557/4AA2_SiteDevelopmentPlan_ENGGW-03_3.png?ex=6818cda2&is=68177c22&hm=8035b33176383dc887b9573076bd7f2797d05b7891a1845cdefb472da1024fbf&=&format=webp&quality=lossless&width=1437&height=1016');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+    .mapComponent{
+      overflow: hidden;
+      opacity: 0%;
+      background-color: white;
+      position: absolute;
+    }
+  </style>
+  <script id="zoomableScript">
+    // Constants
+    const CONTAINER_WIDTH_VW = 65; // Container width in vw
+    const INITIAL_WIDTH_PX = 200; // Initial width in px
+    const INITIAL_WIDTH_VW = INITIAL_WIDTH_PX / window.innerWidth * 100; // Initial width in vw
+    var aspectRatio = 1; // Width to height ratio
+    
+    // DOM Elements
+    const containerElement = document.getElementById('container'); // User-defined container
+    const zoomableElement = document.getElementById('map'); // User-defined zoomable element
+    
+    // Zooming configuration
+    const ZOOM_INTERVAL = 0.1; // Zoom interval
+    let currentScale = 1; // Initial scale
+    
+    // Buttons
+    const resetZoomBtn = document.getElementById('zoomReset');
+    const zoomInBtn = document.getElementById('zoomIn');
+    const zoomOutBtn = document.getElementById('zoomOut');
+    
+    // Event Listeners for Zoom Buttons
+    resetZoomBtn.addEventListener('click', function() {
+        setZoom(1); // Reset zoom
+    });
+    
+    zoomInBtn.addEventListener('click', function() {
+        setZoom(currentScale + ZOOM_INTERVAL); // Zoom in
+    });
+    
+    zoomOutBtn.addEventListener('click', function() {
+        setZoom(currentScale - ZOOM_INTERVAL); // Zoom out
+    });
+    
+    // Function to set the size of the zoomable element
+    function setZoomableSize(w) {
+        zoomableElement.style.width = vwToPx(w) + "px";
+        zoomableElement.style.height = vwToPx(w) * aspectRatio + "px";
+    }
+    
+    // Initialize the zoomable element size on load
+    setZoomableSize(INITIAL_WIDTH_VW);
+    
+    // Function to handle zooming
+    function setZoom(s) {
+        currentScale = Math.max(s, 0.1); // Ensure scale does not go below 1
+        zoomableElement.style.transform = "scale(" + currentScale + ")";
+        // You can call scrollToComponent(clicked) here if needed
+    }
+    
+    // Function to set scroll position to a specific component
+    function scrollToComponent(comp) {
+        const centerX = (comp.left) + (comp.width) / 2;
+        const centerY = (comp.top) + (comp.height) / 2;
+        scrollToPosition(centerX, centerY);
+    }
+    
+    // Function to set scroll position to specific coordinates
+    function scrollToPosition(l, t) {
+        const viewportToMapRatio = window.innerWidth / 100 * INITIAL_WIDTH_VW;
+        const scrollX = viewportToMapRatio * (currentScale / 100) * l - (viewportToMapRatio / 2);
+        const scrollY = viewportToMapRatio * (currentScale / 100) * (aspectRatio * t) - (window.innerHeight / 2);
+        containerElement.scrollTo(scrollX, scrollY); // Scroll to position in pixels
+    }
+    
+    function setAspectRatio(widthSegments,heightSegments){
+      aspectRatio = heightSegments/widthSegments;
+    }
+  </script>
+  <style id="toolbarStyle">
+  </style>
+  <style id="mapEditorStyle">
+    .mapEditorBtn{
+      z-index: -1;
+      width: 30px;
+      height: 30px;
+      position: absolute;
+    }
+  </style>
+  <script id="mapEditorScript">
+    // Constants
+    const MAP_SEGMENT_WIDTH = 100;//in px
+    const MAP_SEGMENT_HEIGHT = 100;//in px
+    // Vars
+    var widthSegments = 1,heightSegments = 1;
+    
+    // DOM Elements
+    const mapElement = document.getElementById('map'); // User-defined map element
+    
+    // Buttons
+    const addBtnLeft  = document.getElementById('addMapL');
+    const addBtnUp    = document.getElementById('addMapU');
+    const addBtnRight = document.getElementById('addMapR');
+    const addBtnDown  = document.getElementById('addMapD');
+    const addBtns = [addBtnLeft,addBtnUp,addBtnRight,addBtnDown];
+      //Event Listeners
+    addBtnRight.addEventListener('click', function() {
+      widthSegments += 1;
+      setAspectRatio(widthSegments,heightSegments);
+      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
+      console.log('aspect ratio '+aspectRatio);
+      addBtns.forEach(setBtnPos);
+    });
+    addBtnDown.addEventListener('click', function() {
+      heightSegments += 1;
+      setAspectRatio(widthSegments,heightSegments);
+      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
+      console.log('aspect ratio '+aspectRatio);
+      addBtns.forEach(setBtnPos);
+    });
+    
+      setAspectRatio(widthSegments,heightSegments);
+      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
+    // Onload
+    addBtns.forEach(setBtnPos);
+    function setBtnPos(btn, index){
+      btn.style.zIndex = "5";
+      switch(index){
+        case 0:
+          btn.style.left = "-30px";
+          btn.style.top = (vhToPx(50)-15)+"px";
+          break;
+        case 1:
+          btn.style.left = (vwToPx(50)-15)+"px";
+          btn.style.top = "-30px";
+          break;
+        case 2:
+          btn.style.right = "-30px";
+          btn.style.top = (vhToPx(50)-15)+"px";
+          break;
+        case 3:
+          btn.style.left = (vwToPx(50)-15)+"px";
+          btn.style.bottom = "-30px";
+          break;
+      }
+    }
+    
+    // Helper Functions
+    function getMapWidth(){
+      let text = mapElement.style.width;
+      return getSize(text);
+    }
+    function getMapHeight(){
+      let text = mapElement.style.height;
+      return getSize(text);
+    }
+    
+    function vwToPx(vw){
+      return vw*window.innerWidth/100;
+    }
+    function vhToPx(vh){
+      return vh*window.innerHeight/100;
+    }
+    function pxToVw(px){
+      return px/window.innerWidth*100;
+    }
+    function getSize(text){
+      if(text.substr(-2) == "px"){
+        return parseInt(text.slice(0, -2));
+      }else
+      if(text.substr(-2) == "vw"){
+        return vwToPx(parseInt(text.slice(0, -2)));
+      }
+    }
+    
   </script>
 </html>
