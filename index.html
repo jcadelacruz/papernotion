@@ -28,15 +28,17 @@
     </div>
     <div id="toolbox">
       <div id="zoomBtns" class="toolbar">
-        <button id="zoomReset">R</button>
-        <button id="zoomOut">-</button>
-        <button id="zoomIn">+</button>
+        <div id="zoomBtnsOpen">></div>
+        <div id="zoomReset">R</div>
+        <div id="zoomOut">-</div>
+        <div id="zoomIn">+</div>
       </div>
       <div id="mapEditorBtns" class="toolbar">
-        <button id="addMapL" class="mapEditorBtn">L+</button>
-        <button id="addMapU" class="mapEditorBtn">U+</button>
-        <button id="addMapD" class="mapEditorBtn">D+</button>
-        <button id="addMapR" class="mapEditorBtn">R+</button>
+        <div id="mapEditorBtnsOpen">></div>
+        <div id="addMapL" class="mapEditorBtn">L+</div>
+        <div id="addMapU" class="mapEditorBtn">U+</div>
+        <div id="addMapD" class="mapEditorBtn">D+</div>
+        <div id="addMapR" class="mapEditorBtn">R+</div>
       </div>
     </div>
   </body>
@@ -58,7 +60,7 @@
   </style>
   <style id="headerStyle">
     #header {
-      height: 60px;
+      height: 8vh;
       width: 100vw;
       background-color: #5C6AC4;
       
@@ -92,16 +94,11 @@
   <style id="zoomableStyle">
     #container{
       width: 100vw;
-      height: 100vh;
+      height: 92vh;
       background-color: lightgray;
       overflow-x: auto;
-      overflow-y: auto;
+      overflow-y: scroll;
       position: relative;
-      
-      display: flex;
-      justify-content: flex-start;
-      flex-wrap: nowrap;
-      flex-direction: column;
     }
     .zoomable{
       position: relative;
@@ -169,6 +166,7 @@
         currentScale = Math.max(s, 0.1); // Ensure scale does not go below 1
         zoomableElement.style.transform = "scale(" + currentScale + ")";
         // You can call scrollToComponent(clicked) here if needed
+        scrollToPosition(INITIAL_WIDTH_VW/2,INITIAL_WIDTH_VW/2*aspectRatio);
     }
     
     // Function to set scroll position to a specific component
@@ -201,7 +199,7 @@
       bottom: 0;
       z-index: auto;
       
-      width: 600px;
+      width: 200px;
       
     }
     .toolbar{
@@ -210,19 +208,40 @@
       width: 200px;
       margin-bottom: 10px;
       
-      display: flex;
-      flex-direction: row;
+      white-space: nowrap;
+      
       overflow-x: auto;
     }
-    .toolbar>button{
+    .toolbar>*{
+      display: inline-flex;
+      align-items: center;
+      
       width: 40px;
       height: 40px;
-      margin: 10px 10px 0 0 ;
+      margin: 0;
       
-      z-index: auto;
+      background-color: rgba(0,0,0,0.1);
     }
-    .toolbar>button:first-child {
+    
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .toolbar::-webkit-scrollbar {
+      display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .toolbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+    
+    .toolbar>*:first-child {
+      position: sticky;
+      left: 0;
+      
       background-color: dodgerBlue;
+      margin: 0;
+      border: none;
+      width: 40px;
+      height: 100%;
     }
   </style>
   <style id="mapEditorStyle">
