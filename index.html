@@ -20,17 +20,23 @@
     </div>
     <div id="container">
       <div id="map" class="zoomable">
-        map lorem ipsum dolor background-color display discordapp
-        <p id="currentTime"></p>
+        <div id="mapBg">
+          map lorem ipsum dolor background-color display discordapp
+          <p id="currentTime"></p>
+        </div>
+      </div>
+    </div>
+    <div id="toolbox">
+      <div id="zoomBtns" class="toolbar">
+        <button id="zoomReset">R</button>
+        <button id="zoomOut">-</button>
+        <button id="zoomIn">+</button>
+      </div>
+      <div id="mapEditorBtns" class="toolbar">
         <button id="addMapL" class="mapEditorBtn">L+</button>
         <button id="addMapU" class="mapEditorBtn">U+</button>
         <button id="addMapD" class="mapEditorBtn">D+</button>
         <button id="addMapR" class="mapEditorBtn">R+</button>
-      </div>
-      <div id="zoomBtns">
-        <button id="zoomReset">R</button>
-        <button id="zoomOut">-</button>
-        <button id="zoomIn">+</button>
       </div>
     </div>
   </body>
@@ -88,21 +94,14 @@
       width: 100vw;
       height: 100vh;
       background-color: lightgray;
-      overflow-x: scroll;
-      overflow-y: scroll;
+      overflow-x: auto;
+      overflow-y: auto;
       position: relative;
       
       display: flex;
-      justify-content: left;
-    }
-    #zoomBtns{
-      position: fixed;
-      right: 0.8vw;
-      bottom: 0.8vh;
-    }
-    #zoomBtns button{
-      width: 26px;
-      height: 26px;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      flex-direction: column;
     }
     .zoomable{
       position: relative;
@@ -110,6 +109,7 @@
     }
     #map{
       background-color: white;
+      width: 150vw;
       
       background-image: url('https://media.discordapp.net/attachments/1293426709596733560/1368597915559530557/4AA2_SiteDevelopmentPlan_ENGGW-03_3.png?ex=6818cda2&is=68177c22&hm=8035b33176383dc887b9573076bd7f2797d05b7891a1845cdefb472da1024fbf&=&format=webp&quality=lossless&width=1437&height=1016');
       background-size: 100% 100%;
@@ -191,14 +191,41 @@
     }
   </script>
   <style id="toolbarStyle">
+    #toolbox{
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      z-index: auto;
+      
+      width: 600px;
+      
+    }
+    .toolbar{
+      background-color: lightblue;
+      height: 60px;
+      width: 200px;
+      margin-bottom: 10px;
+      
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+    .toolbar>button{
+      width: 40px;
+      height: 40px;
+      margin: 10px 10px 0 0 ;
+      
+      z-index: auto;
+    }
+    .toolbar>button:first-child {
+      background-color: dodgerBlue;
+    }
   </style>
   <style id="mapEditorStyle">
-    .mapEditorBtn{
-      z-index: -1;
-      width: 30px;
-      height: 30px;
-      position: absolute;
-    }
   </style>
   <script id="mapEditorScript">
     // Constants
@@ -221,42 +248,15 @@
       widthSegments += 1;
       setAspectRatio(widthSegments,heightSegments);
       setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
-      console.log('aspect ratio '+aspectRatio);
-      addBtns.forEach(setBtnPos);
     });
     addBtnDown.addEventListener('click', function() {
       heightSegments += 1;
       setAspectRatio(widthSegments,heightSegments);
       setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
-      console.log('aspect ratio '+aspectRatio);
-      addBtns.forEach(setBtnPos);
     });
     
-      setAspectRatio(widthSegments,heightSegments);
-      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
-    // Onload
-    addBtns.forEach(setBtnPos);
-    function setBtnPos(btn, index){
-      btn.style.zIndex = "5";
-      switch(index){
-        case 0:
-          btn.style.left = "-30px";
-          btn.style.top = (vhToPx(50)-15)+"px";
-          break;
-        case 1:
-          btn.style.left = (vwToPx(50)-15)+"px";
-          btn.style.top = "-30px";
-          break;
-        case 2:
-          btn.style.right = "-30px";
-          btn.style.top = (vhToPx(50)-15)+"px";
-          break;
-        case 3:
-          btn.style.left = (vwToPx(50)-15)+"px";
-          btn.style.bottom = "-30px";
-          break;
-      }
-    }
+    setAspectRatio(widthSegments,heightSegments);
+    setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
     
     // Helper Functions
     function getMapWidth(){
