@@ -42,6 +42,7 @@
       </div>
     </div>
   </body>
+  
   <style>
     body{
       padding: 0;
@@ -91,6 +92,7 @@
     	color: white;
     }
   </style>
+  
   <style id="zoomableStyle">
     #container{
       width: 100vw;
@@ -188,6 +190,7 @@
       aspectRatio = heightSegments/widthSegments;
     }
   </script>
+  
   <style id="toolbarStyle">
     #toolbox{
       display: flex;
@@ -211,10 +214,13 @@
       white-space: nowrap;
       
       overflow-x: auto;
+      
+      transition: width 1s;
     }
     .toolbar>*{
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       
       width: 40px;
       height: 40px;
@@ -244,8 +250,32 @@
       height: 100%;
     }
   </style>
-  <style id="mapEditorStyle">
-  </style>
+  <script id="toolbarScript">
+    const toolbars = document.getElementsByClassName("toolbar");
+    
+    Array.from(toolbars).forEach(initializeToolbar);
+    
+    function initializeToolbar(toolbar, index) {
+      toolbar.children[0].addEventListener('click', function() {
+        toggleToolbar(toolbar);
+      });
+    }
+    
+    function toggleToolbar(toolbar) {
+      const currentWidth = parseInt(toolbar.style.width, 10) || 200; 
+      
+      if (currentWidth === 200) {
+        setToolbarWidth(toolbar, 40); // Close the toolbar
+      } else {
+        setToolbarWidth(toolbar, 200); // Open the toolbar
+      }
+    }
+    
+    function setToolbarWidth(toolbar, width) {
+      toolbar.style.width = width + "px";
+    }
+  </script>
+  
   <script id="mapEditorScript">
     // Constants
     const MAP_SEGMENT_WIDTH = 100;//in px
