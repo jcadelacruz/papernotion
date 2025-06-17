@@ -44,8 +44,6 @@
       </div>
       <div id="mapEditorBtns" class="toolbar">
         <div id="mapEditorBtnsOpen">></div>
-        <div id="addMapL" class="mapEditorBtn">L+</div>
-        <div id="addMapU" class="mapEditorBtn">U+</div>
         <div id="addMapD" class="mapEditorBtn">D+</div>
         <div id="addMapR" class="mapEditorBtn">R+</div>
       </div>
@@ -107,12 +105,32 @@
     }
   </style>
   
+  <script id="helperScript">
+    function vwToPx(vw){
+      return vw*window.innerWidth/100;
+    }
+    function vhToPx(vh){
+      return vh*window.innerHeight/100;
+    }
+    function pxToVw(px){
+      return px/window.innerWidth*100;
+    }
+    function parseSizeToPx(text){
+      if(text.substr(-2) == "px"){
+        return parseInt(text.slice(0, -2));
+      }else
+      if(text.substr(-2) == "vw"){
+        return vwToPx(parseInt(text.slice(0, -2)));
+      }
+    }
+  </script>
+  
   <style id="zoomableStyle">
     #container{
       width: 100vw;
       height: 92vh;
       background-color: lightgray;
-      overflow-x: auto;
+      overflow-x: scroll;
       overflow-y: scroll;
       position: relative;
     }
@@ -304,53 +322,45 @@
     const mapElement = document.getElementById('map'); // User-defined map element
     
     // Buttons
-    const addBtnLeft  = document.getElementById('addMapL');
-    const addBtnUp    = document.getElementById('addMapU');
+    //const addBtnLeft  = document.getElementById('addMapL');
+    //const addBtnUp    = document.getElementById('addMapU');
     const addBtnRight = document.getElementById('addMapR');
     const addBtnDown  = document.getElementById('addMapD');
-    const addBtns = [addBtnLeft,addBtnUp,addBtnRight,addBtnDown];
-      //Event Listeners
-    addBtnRight.addEventListener('click', function() {
-      widthSegments += 1;
-      setAspectRatio(widthSegments,heightSegments);
-      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
-    });
-    addBtnDown.addEventListener('click', function() {
-      heightSegments += 1;
-      setAspectRatio(widthSegments,heightSegments);
-      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
-    });
-    
-    setAspectRatio(widthSegments,heightSegments);
-    setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
+    const addBtns = [addBtnRight,addBtnDown];
     
     // Helper Functions
     function getMapWidth(){
       let text = mapElement.style.width;
-      return getSize(text);
+      return parseSizeToPx(text);
     }
     function getMapHeight(){
       let text = mapElement.style.height;
-      return getSize(text);
+      return parseSizeToPx(text);
     }
     
-    function vwToPx(vw){
-      return vw*window.innerWidth/100;
-    }
-    function vhToPx(vh){
-      return vh*window.innerHeight/100;
-    }
-    function pxToVw(px){
-      return px/window.innerWidth*100;
-    }
-    function getSize(text){
-      if(text.substr(-2) == "px"){
-        return parseInt(text.slice(0, -2));
-      }else
-      if(text.substr(-2) == "vw"){
-        return vwToPx(parseInt(text.slice(0, -2)));
-      }
+    // Onload
+    function mapEditorScriptOnLoad(){
+        //Event Listeners
+      addBtnRight.addEventListener('click', function() {
+        widthSegments += 1;
+        setAspectRatio(widthSegments,heightSegments);
+        setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
+      });
+      addBtnDown.addEventListener('click', function() {
+        heightSegments += 1;
+        setAspectRatio(widthSegments,heightSegments);
+        setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
+      });
+      
+      setAspectRatio(widthSegments,heightSegments);
+      setZoomableSize(INITIAL_WIDTH_VW*widthSegments);
     }
     
+  </script>
+  
+  <script id="onloadScript">
+    window.onload = function(){
+      mapEditorScriptOnLoad();
+    }
   </script>
 </html>
