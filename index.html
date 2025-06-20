@@ -360,20 +360,40 @@
     
   </script>
   
+  <style id="elementsStyle">
+    #map{
+      position: relative;
+    }
+    .mapElement{
+      background-color: lightcyan;
+      border: 1px solid black;
+      position: absolute;
+    }
+  </style>
   <script id="elementsScript">
     var allElementsOnCanvas = [];
     //const mapElement = document.getElementById('map');
     class canvasElement{
-      constructor(posX, posY, width, height){
+      constructor(posX, posY, width, height) {
+        this.posX = posX;
+        this.posY = posY;
+        this.width = width;
+        this.height = height;
+
         this.htmlElement = this.createHTMLElement();
         
         allElementsOnCanvas.push(this);
       }
       createHTMLElement(){
         let q = document.createElement('div');
-        q.style = "left: "+this.posX+";top: "+this.posY+";width: "+this.width+";height: "+this.height+";";
-        
         mapElement.appendChild(q);
+        
+        q.classList.add('mapElement');
+        q.style.left = this.posX + "px";
+        q.style.top = this.posY + "px";
+        q.style.width = this.width + "px";
+        q.style.height = this.height + "px";
+        
         return q;
       }
     }
@@ -382,7 +402,7 @@
     
     function initializeElementAddBtns(){
       addElementBtn.addEventListener('click', function() {
-        const INITIAL_WIDTH_ELEMENT = 20;
+        const INITIAL_WIDTH_ELEMENT = 100;
         let c = new canvasElement(10,10,INITIAL_WIDTH_ELEMENT,INITIAL_WIDTH_ELEMENT);
       });
     }
