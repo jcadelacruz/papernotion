@@ -288,7 +288,9 @@
   <script id="toolbarScript">
     const toolbars = document.getElementsByClassName("toolbar");
     
-    Array.from(toolbars).forEach(initializeToolbar);
+    function initializeAllToolbars(){
+      Array.from(toolbars).forEach(initializeToolbar);
+    }
     
     function initializeToolbar(toolbar, index) {
       toolbar.children[0].addEventListener('click', function() {
@@ -359,17 +361,38 @@
   </script>
   
   <script id="elementsScript">
+    var allElementsOnCanvas = [];
+    //const mapElement = document.getElementById('map');
     class canvasElement{
       constructor(posX, posY, width, height){
-        this.htmlElement = document.createElement('div');
+        this.htmlElement = this.createHTMLElement();
         
+        allElementsOnCanvas.push(this);
       }
+      createHTMLElement(){
+        let q = document.createElement('div');
+        q.style = "left: "+this.posX+";top: "+this.posY+";width: "+this.width+";height: "+this.height+";";
+        
+        mapElement.appendChild(q);
+        return q;
+      }
+    }
+    
+    const addElementBtn = document.getElementById('addElem');
+    
+    function initializeElementAddBtns(){
+      addElementBtn.addEventListener('click', function() {
+        const INITIAL_WIDTH_ELEMENT = 20;
+        let c = new canvasElement(10,10,INITIAL_WIDTH_ELEMENT,INITIAL_WIDTH_ELEMENT);
+      });
     }
   </script>
   
   <script id="onloadScript">
     window.onload = function(){
+      initializeAllToolbars();
       mapEditorScriptOnLoad();
+      initializeElementAddBtns();
     }
   </script>
 </html>
