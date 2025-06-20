@@ -382,19 +382,35 @@
 
         this.htmlElement = this.createHTMLElement();
         
+        this.isMovable = true;
+        this.isEditable = true; 
+        
+        
         allElementsOnCanvas.push(this);
       }
+      //initiate
       createHTMLElement(){
         let q = document.createElement('div');
         mapElement.appendChild(q);
         
         q.classList.add('mapElement');
         q.style.left = this.posX + "px";
-        q.style.top = this.posY + "px";
+        q.style.top = this.posY+"px";
         q.style.width = this.width + "px";
         q.style.height = this.height + "px";
         
+        this.addHTMLElementEventListeners(q);
+        
         return q;
+      }
+      addHTMLElementEventListeners(q){
+        q.addEventListener('click', () => {
+            this.selectHTMLElement();
+        });
+      }
+      //select functions
+      selectHTMLElement(){
+        console.log("editing this");
       }
     }
     
